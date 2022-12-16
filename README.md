@@ -13,42 +13,26 @@ On this demo:
 
 Here's a small diagram:
 <p align="center">
-<img src="media/diagram.png" alt="diagram" />
+<img src="media/foobar.png" alt="diagram" />
 </p>
 
 ## QuickStart
 
-Requirements: Docker and Docker Compose.
+Requirements: k8s cluster with tempo, loki and grafana installed
 
-1. Build and run services with docker-compose:
-```
-docker-compose up --build -d 
-```
+1. Build and run services
 
-2. See running services with:
+2. Deploy services to your k8s cluster as deployment:
 ```
-docker-compose ps
+kubectl apply -f ./k8s/foobar.yaml
 ```
 
-3. Generate some load with k6:
+3. Generate some load with attached shell script. This assumes you have portforwarding enabled for the foo app on port 9091
 ```
-docker run -i --network=foobar-demo_default loadimpact/k6 run --quiet - <example.js
+sh gen_trace.sh
 ```
 
 4. See logs with:
 ```
-docker-compose logs foo | grep trace_id
+kubectl logs -f <foo-pod-name> | grep trace_id
 ```
-
-5. Pick a `trace_id` from the logs.
-
-6. Go to Grafana (http://localhost:3000) -> Explore -> Tempo and paste the `trace_id`.
-<p align="center">
-<img src="media/trace.png" alt="diagram" />
-</p>
-
-7. Stop the whole setup with:
-```
-docker-compose stop
-```
-
